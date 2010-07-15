@@ -1,0 +1,80 @@
+# Copyright 2010 ThoughtWorks, Inc. Licensed under the Apache License, Version 2.0.
+
+require 'rake/testtask'
+require 'rake/rdoctask'
+
+include FileUtils
+
+DIST_DIR = 'dist'
+SOURCE_DIR = File.dirname(__FILE__)
+
+task :default => :dist
+
+desc "build the java source browser and get the jar dependency"
+task :get_jars do
+  java_project_dir = "#{File.dirname(__FILE__)}/../java_source_browser"
+  jar_cmd = "cd #{java_project_dir} && ant"
+  sh(jar_cmd)
+  rm_rf("#{SOURCE_DIR}/lib")
+  mkdir_p("#{SOURCE_DIR}/lib")
+  cp("#{java_project_dir}/dist/mingle-hg-source-browser.jar", "#{SOURCE_DIR}/lib/")
+  cp("#{java_project_dir}/lib/log4j-1.2.15.jar", "#{SOURCE_DIR}/lib/")
+end
+
+desc "run all unit tests"
+task :test => :get_jars do
+  
+  raise "JRuby required! Please use provided jrake script in repository root!" unless RUBY_PLATFORM =~ /java/
+  
+  Rake::TestTask.new do |t|
+    rm_rf('tmp/test')
+    t.test_files = FileList['tests/unit/**/*_test.rb']
+    t.verbose = true
+  end
+end 
+
+desc "assemble the plugin for distribution"
+task :dist => [:test] do
+  rm_rf(DIST_DIR)
+  mkdir_p("#{DIST_DIR}/mingle_hg_plugin")
+  ['app', 'db', 'config', 'lib'].each do |dir|
+    cp_r(File.join(SOURCE_DIR, dir), "#{DIST_DIR}/mingle_hg_plugin")
+  end
+  cp(File.join(SOURCE_DIR, 'init.rb'), "#{DIST_DIR}/mingle_hg_plugin")
+  rm("#{DIST_DIR}/mingle_hg_plugin/lib/log4j-1.2.15.jar")
+
+  tar_cmd = "cd #{DIST_DIR} && tar czf mingle_hg_plugin.tar.gz mingle_hg_plugin"
+  sh(tar_cmd)
+  rm_rf("#{DIST_DIR}/mingle_hg_plugin")
+end
+
+task :mingle_deploy => :dist do
+  Rake::Task['mingle:stop'].invoke
+  rm_rf("#{ENV['MINGLE_APP_DIR']}/vendor/plugins/mingle_hg_plugin")
+  cp("#{DIST_DIR}/mingle_hg_plugin.tar.gz", "#{ENV['MINGLE_APP_DIR']}/vendor/plugins/")
+  untar_cmd = "cd #{ENV['MINGLE_APP_DIR']}/vendor/plugins && tar xzvf mingle_hg_plugin.tar.gz"
+  sh(untar_cmd)
+#  Rake::Task['mingle:start'].invoke
+end
+
+namespace :mingle do
+
+  task :stop do
+    stop_mingle_cmd = "cd #{ENV['MINGLE_APP_DIR']} && ./MingleServer stop"
+    system(stop_mingle_cmd)
+  end
+
+  task :start do
+    start_mingle_cmd = "cd #{ENV['MINGLE_APP_DIR']} && ./MingleServer start --mingle.dataDir=#{ENV['MINGLE_DATA_DIR']}"
+    sh(start_mingle_cmd)
+  end
+
+end
+
+Rake::RDocTask.new do |rd|
+  rd.main = "README.rdoc"
+  rd.rdoc_files.include('README.rdoc', 'app/**/*.rb', 'db/**/*.rb', 
+    'init.rb', 'config/routes.rb', 'lib/*.rb')
+end
+
+

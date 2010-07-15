@@ -1,0 +1,50 @@
+== Overview
+
+This repository contains the source code for the Mercurial SCM Plugin for Mingle. Within this repository are two projects. The first is java_source_browser, containing a Java implementation of the source browser functionality required by the plugin. The second, rails_plugin, depends upon java_source_browser and is the proper rails plugin that provides Hg integration to Mingle.
+
+Features include:
+
+* Supports local and remote repositories
+* Mingle history integration
+* Mingle revision view
+* Mingle source browser
+
+== INSTALL:
+
+Starting with release 3.0 of Mingle, this plugin is distributed with Mingle. 
+
+If you wish to build and install from source:
+
+* cd to rails_plugin
+* ./jrake
+* cp dist/mingle_hg_plugin.tar.gz to MINGLE_ROOT/vendor/plguins
+* expand the tarball
+* restart Mingle
+
+This plugin must first make a local clone of any configured repositories, so there may be a bit of a delay from when you first configure a project to use this plugin to when you start seeing revisions in the project's history.
+
+== SPECIAL NOTE FOR OS X 
+
+Be sure that your hg executable is available on the PATH to Mingle, otherwise the plugin will not work. 
+
+If you are using the tar.gz installer, use normal UNIX means of putting hg on your PATH.
+
+If you are using the Mac OS X GUI launcher, you will need to make this PATH entry in you ~/.MacOSX/environment.plist file (if this file does not exist, create it):
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+        <key>PATH</key>
+        <string>/opt/local/bin:/usr/bin</string>
+</dict>
+</plist>
+
+== REMAINING WORK:
+
+* Implement Mingle-style revision diffs
+* Performance and overly complex implementation still a big concern with source browser.
+
+== COPYRIGHT:
+
+Copyright 2010 ThoughtWorks, Inc. Licensed under the Apache License, Version 2.0.

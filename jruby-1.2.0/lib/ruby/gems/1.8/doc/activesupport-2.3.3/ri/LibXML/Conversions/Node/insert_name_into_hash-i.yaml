@@ -1,0 +1,21 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: protected
+block_params: 
+comment: 
+- !ruby/struct:SM::Flow::P 
+  body: Insert name into hash
+- !ruby/object:SM::Flow::LIST 
+  type: :NOTE
+  contents: 
+  - !ruby/struct:SM::Flow::LI 
+    body: Hash to merge the converted element into.
+    label: 'hash:'
+  - !ruby/struct:SM::Flow::LI 
+    body: name to to merge into hash
+    label: 'name:'
+full_name: LibXML::Conversions::Node#insert_name_into_hash
+params: (hash, name)
+name: insert_name_into_hash
+is_singleton: false
+aliases: []
+

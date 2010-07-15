@@ -1,0 +1,9 @@
+== Overview
+
+This is the rails plugin portion of Mingle Hg integration. This project is dependent upon the java_source_browser project, which is in the same repository. The build file will take care of this dependency on your behalf.
+
+== Build and test
+
+The default rake task will build dependencies, execute all tests, and assemble the distribution tarball into the dist folder.
+
+*NOTE:* As this plugin is dependent upon a Java implementation of the source browser, the tests will only execute using JRuby. This repository contains both a JRuby distribution (1.2, as used by Mingle 3.0) as well as convenience jruby and jrake scripts.

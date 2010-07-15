@@ -1,0 +1,174 @@
+--- !ruby/object:RI::ClassDescription 
+includes: []
+
+comment: 
+- !ruby/struct:SM::Flow::P 
+  body: A Ruby client library for memcached.
+attributes: 
+- !ruby/object:RI::Attribute 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Should the client try to failover to another server if the first server
+      is down? Defaults to true.
+  rw: R
+  name: failover
+- !ruby/object:RI::Attribute 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Log debug/info/warn/error to the given Logger, defaults to nil.
+  rw: R
+  name: logger
+- !ruby/object:RI::Attribute 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: The multithread setting for this instance
+  rw: R
+  name: multithread
+- !ruby/object:RI::Attribute 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: The namespace for this instance
+  rw: R
+  name: namespace
+- !ruby/object:RI::Attribute 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Don't send or look for a reply from the memcached server for write operations.
+      Please note this feature only works in memcached 1.2.5 and later. Earlier versions
+      will reply with &quot;ERROR&quot;.
+  rw: R
+  name: no_reply
+- !ruby/object:RI::Attribute 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: The servers this client talks to. Play at your own peril.
+  rw: R
+  name: servers
+- !ruby/object:RI::Attribute 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Socket timeout limit with this client, defaults to 0.5 sec. Set to nil to
+      disable timeouts.
+  rw: R
+  name: timeout
+instance_methods: 
+- !ruby/object:RI::MethodSummary 
+  name: '[]'
+- !ruby/object:RI::MethodSummary 
+  name: '[]='
+- !ruby/object:RI::MethodSummary 
+  name: active?
+- !ruby/object:RI::MethodSummary 
+  name: add
+- !ruby/object:RI::MethodSummary 
+  name: append
+- !ruby/object:RI::MethodSummary 
+  name: cache_decr
+- !ruby/object:RI::MethodSummary 
+  name: cache_get
+- !ruby/object:RI::MethodSummary 
+  name: cache_get_multi
+- !ruby/object:RI::MethodSummary 
+  name: cache_incr
+- !ruby/object:RI::MethodSummary 
+  name: cas
+- !ruby/object:RI::MethodSummary 
+  name: check_multithread_status!
+- !ruby/object:RI::MethodSummary 
+  name: create_continuum_for
+- !ruby/object:RI::MethodSummary 
+  name: decr
+- !ruby/object:RI::MethodSummary 
+  name: delete
+- !ruby/object:RI::MethodSummary 
+  name: entry_count_for
+- !ruby/object:RI::MethodSummary 
+  name: fetch
+- !ruby/object:RI::MethodSummary 
+  name: flush_all
+- !ruby/object:RI::MethodSummary 
+  name: get
+- !ruby/object:RI::MethodSummary 
+  name: get_multi
+- !ruby/object:RI::MethodSummary 
+  name: get_server_for_key
+- !ruby/object:RI::MethodSummary 
+  name: gets
+- !ruby/object:RI::MethodSummary 
+  name: handle_error
+- !ruby/object:RI::MethodSummary 
+  name: hash_for
+- !ruby/object:RI::MethodSummary 
+  name: incr
+- !ruby/object:RI::MethodSummary 
+  name: inspect
+- !ruby/object:RI::MethodSummary 
+  name: make_cache_key
+- !ruby/object:RI::MethodSummary 
+  name: noreply
+- !ruby/object:RI::MethodSummary 
+  name: prepend
+- !ruby/object:RI::MethodSummary 
+  name: raise_on_error_response!
+- !ruby/object:RI::MethodSummary 
+  name: readonly?
+- !ruby/object:RI::MethodSummary 
+  name: replace
+- !ruby/object:RI::MethodSummary 
+  name: request_setup
+- !ruby/object:RI::MethodSummary 
+  name: reset
+- !ruby/object:RI::MethodSummary 
+  name: servers=
+- !ruby/object:RI::MethodSummary 
+  name: set
+- !ruby/object:RI::MethodSummary 
+  name: stats
+- !ruby/object:RI::MethodSummary 
+  name: with_server
+- !ruby/object:RI::MethodSummary 
+  name: with_socket_management
+class_methods: 
+- !ruby/object:RI::MethodSummary 
+  name: new
+full_name: MemCache
+constants: 
+- !ruby/object:RI::Constant 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: The version of MemCache you are using.
+  value: '''1.7.4'''
+  name: VERSION
+- !ruby/object:RI::Constant 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Default options for the cache object.
+  value: '{     :namespace   => nil,     :readonly    => false,     :multithread =>
+    true,     :failover    => true,     :timeout     => 0.5,     :logger      => nil,     :no_reply    =>
+    false,   }'
+  name: DEFAULT_OPTIONS
+- !ruby/object:RI::Constant 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Default memcached port.
+  value: "11211"
+  name: DEFAULT_PORT
+- !ruby/object:RI::Constant 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Default memcached server weight.
+  value: "1"
+  name: DEFAULT_WEIGHT
+- !ruby/object:RI::Constant 
+  comment: 
+  - !ruby/struct:SM::Flow::P 
+    body: Add <tt>key</tt> to the cache with value <tt>value</tt> that expires in
+      <tt>expiry</tt> seconds. If <tt>raw</tt> is true, <tt>value</tt> will not be
+      Marshalled.
+  - !ruby/struct:SM::Flow::P 
+    body: 'Warning: Readers should not call this method in the event of a cache miss;
+      see MemCache#add.'
+  value: 1024 * 1024
+  name: ONE_MB
+superclass: Object
+name: MemCache

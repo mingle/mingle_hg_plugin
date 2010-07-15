@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: ActiveSupport::Memoizable::memoized_ivar_for
+params: (symbol)
+name: memoized_ivar_for
+is_singleton: true
+aliases: []
+

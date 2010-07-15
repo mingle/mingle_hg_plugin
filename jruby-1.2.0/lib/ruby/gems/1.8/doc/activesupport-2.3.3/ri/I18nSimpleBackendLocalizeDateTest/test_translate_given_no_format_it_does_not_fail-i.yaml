@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: I18nSimpleBackendLocalizeDateTest#test_translate_given_no_format_it_does_not_fail
+params: ()
+name: test_translate_given_no_format_it_does_not_fail
+is_singleton: false
+aliases: []
+

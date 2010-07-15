@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: ActiveSupport::MessageEncryptor::new
+params: (secret, cipher = 'aes-256-cbc')
+name: new
+is_singleton: true
+aliases: []
+

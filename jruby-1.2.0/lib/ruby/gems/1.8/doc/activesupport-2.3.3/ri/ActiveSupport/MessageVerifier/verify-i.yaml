@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: ActiveSupport::MessageVerifier#verify
+params: (signed_message)
+name: verify
+is_singleton: false
+aliases: []
+

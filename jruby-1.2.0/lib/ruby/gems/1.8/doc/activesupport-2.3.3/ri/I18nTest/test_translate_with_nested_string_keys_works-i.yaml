@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: I18nTest#test_translate_with_nested_string_keys_works
+params: ()
+name: test_translate_with_nested_string_keys_works
+is_singleton: false
+aliases: []
+

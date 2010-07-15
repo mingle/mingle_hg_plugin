@@ -1,0 +1,13 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+- !ruby/struct:SM::Flow::P 
+  body: 'JRUBY-2011: Match balanced quotes and parenthesis - ''text'',(''text'') or
+    (text)'
+full_name: "::MsSQL::Column#unquote_string"
+params: (value)
+name: unquote_string
+is_singleton: false
+aliases: []
+

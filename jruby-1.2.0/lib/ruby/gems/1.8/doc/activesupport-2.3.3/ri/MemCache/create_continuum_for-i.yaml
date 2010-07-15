@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: protected
+block_params: 
+comment: 
+full_name: MemCache#create_continuum_for
+params: (servers)
+name: create_continuum_for
+is_singleton: false
+aliases: []
+

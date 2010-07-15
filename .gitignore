@@ -1,0 +1,13 @@
+.DS_Store
+rails_plugin/app/**/*.jar
+rails_plugin/build/*
+rails_plugin/lib/*
+rails_plugin/tmp/*
+rails_plugin/html/*
+rails_plugin/dist/*
+rails_plugin/.rakeTasks
+mingle_hg_plugin.iws
+out/*
+tmp/*
+java_source_browser/target/*
+java_source_browser/dist/*

@@ -1,0 +1,165 @@
+# Copyright 2010 ThoughtWorks, Inc. Licensed under the Apache License, Version 2.0.
+
+require 'uri'
+require File.expand_path(File.join(File.dirname(__FILE__), 'hg_java_env'))
+
+#
+# HgConfiguration is the model class for storing a project's hg repository
+# connection information. HgConfiguration is also responsible for producing
+# hg-specific vocabulary and constructing the 'repository' object that
+# mingle will use to interact with the actual hg repository.
+#
+# Required by Mingle: project, display_name, vocabulary, view_partials, repository
+# 
+# Provided by Mingle: strip_on_write, include RepositoryModelHelper, project.encrypt
+class HgConfiguration < ActiveRecord::Base
+  
+  # supplies create_or_update method that keeps controller simple
+  # supplies mark_for_deletion method used by mingle to manage config lifecycle
+  include RepositoryModelHelper
+  
+  # mingle model utility that will strip leading and trailing whitespace from all attributes
+  strip_on_write  
+  # configuration must belong to a project
+  belongs_to :project
+  validates_presence_of :repository_path
+  before_save :encrypt_password
+  after_create :remove_cache_dirs
+  after_destroy :remove_cache_dirs
+  
+  #<snippet name="display_name">
+  class << self
+    # *returns*: Human-readable name of SCM type, used in source config droplist
+    def display_name
+      "Mercurial"
+    end
+  end
+  #</snippet>
+  
+  def remove_cache_dirs
+    FileUtils.rm_rf(File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s)))
+  end
+  
+  # *returns* whether or not the repository content is ready to be browsed on the source tab
+  def source_browsing_ready?
+    initialized?
+  end
+  
+  # prevent user from storing any userinfo in repostory path
+  def validate
+    super
+    
+    begin
+      uri = URI.parse(repository_path)
+    rescue
+      errors.add_to_base(%{
+        The repository path appears to be of invalid URI format.
+        Please check your repository path.
+      })
+    end
+
+    if uri && !uri.password.blank?
+      errors.add_to_base(%{
+        Do not store repository password as part of the URL. 
+        Please use the supplied form field.
+      }) 
+    end
+  end
+  
+  # use mingle project's encryption capability to protect password in DB
+  def encrypt_password
+    pwd_attr = @attributes['password']
+    if !pwd_attr.blank?
+      write_attribute(:password, project.encrypt(pwd_attr))
+    else
+      write_attribute(:password, pwd_attr)
+    end
+  end
+
+  # *returns*: decrypted password
+  def password
+    pwd = super
+    return pwd if pwd.blank?
+    project.decrypt(pwd)
+  end
+  
+  # *returns*: hg-specific terms for mingle display
+  def vocabulary
+    {
+      'revision' => 'changeset',
+      'committed' => 'committed',
+      'repository' => 'repository',
+      'head' => 'tip',
+      'short_identifier_length' => 12
+    }
+  end
+  
+  # *returns*: table header and row partials to be used in source directory browser
+  def view_partials
+    {:node_table_header => 'hg_source/node_table_header', 
+     :node_table_row => 'hg_source/node_table_row' }
+  end
+  
+  # *returns*: an instance of HgRepository for Mercurial repository sepcified by this configuration
+  def repository
+    clone_path = File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s, 'repository'))
+    style_dir = File.expand_path("#{File.dirname(__FILE__)}/../templates")
+    
+    java_hg_client = com.thoughtworks.studios.mingle.hg.hgcmdline::HgClient.new(repository_path_with_userinfo, clone_path, style_dir)
+    hg_client = HgClient.new(java_hg_client)
+    source_browser_cache_path = File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s, 'source_browser_cache'))
+    mingle_rev_repos = HgMingleRevisionRepository.new(project)
+    source_browser = HgSourceBrowser.new(
+      java_hg_client, source_browser_cache_path, mingle_rev_repos
+    )
+    repository = HgRepository.new(hg_client,  source_browser)
+    HgRepositoryClone.new(HgSourceBrowserSynch.new(repository, source_browser))
+  end
+  
+  # *returns*: options needed for RepositoryModelHelper::create_or_update to create 
+  # new config based upon existing config
+  def clone_repository_options
+    {:repository_path => self.repository_path, :username => self.username, :password => self.password}
+  end
+  
+  # *returns*: whether new configuration attributes contain a path name as required by
+  # RepositoryModel::create_or_update to determine whether to update existing config for create new config
+  def repository_location_changed?(configuration_attributes)
+    self.repository_path != configuration_attributes[:repository_path] 
+  end
+  
+  #:nodoc:
+  def repository_path_with_userinfo
+    uri = URI.parse(repository_path)
+    return repository_path if uri.scheme.blank?
+    
+    if !username.blank? && !password.blank?
+      "#{uri.scheme}://#{username}:#{password}@#{host_port_path_from(uri)}"
+    elsif !username.blank?
+      "#{uri.scheme}://#{username}@#{host_port_path_from(uri)}"
+    elsif !uri.user.blank? && password.blank?
+      "#{uri.scheme}://#{uri.user}@#{host_port_path_from(uri)}"
+    elsif !uri.user.blank? && !password.blank?
+      "#{uri.scheme}://#{uri.user}:#{password}@#{host_port_path_from(uri)}"
+    else
+      repository_path
+    end
+      
+  end
+  
+  def repository_path_with_safe_userinfo
+    if password.blank?
+      repository_path_with_userinfo
+    else
+      repository_path_with_userinfo.gsub(password, '*****')
+    end
+  end
+  
+  def host_port_path_from(uri)
+    result = "#{uri.host}"
+    result << ":#{uri.port}" unless uri.port.blank?
+    result << "#{uri.path}"
+    result
+  end
+
+end

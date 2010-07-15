@@ -1,0 +1,12 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+- !ruby/struct:SM::Flow::P 
+  body: 'Alias for #setup_backend'
+full_name: I18nSimpleBackendTestSetup#setup
+params: ()
+name: setup
+is_singleton: false
+aliases: []
+

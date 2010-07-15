@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: I18nSimpleBackendLoadTranslationsTest#test_load_rb_loads_data_from_ruby_file
+params: ()
+name: test_load_rb_loads_data_from_ruby_file
+is_singleton: false
+aliases: []
+

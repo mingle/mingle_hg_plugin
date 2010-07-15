@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: I18nSimpleBackendPluralizeTest#test_pluralize_given_3_returns_plural_string
+params: ()
+name: test_pluralize_given_3_returns_plural_string
+is_singleton: false
+aliases: []
+

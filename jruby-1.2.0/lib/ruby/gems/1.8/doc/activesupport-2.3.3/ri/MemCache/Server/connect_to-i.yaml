@@ -1,0 +1,10 @@
+--- !ruby/object:RI::MethodDescription 
+visibility: public
+block_params: 
+comment: 
+full_name: MemCache::Server#connect_to
+params: (host, port, timeout=nil)
+name: connect_to
+is_singleton: false
+aliases: []
+

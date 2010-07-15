@@ -1,0 +1,5 @@
+repo: 436f721113bd921dcec04e291e79bfe64617fc59
+node: 6d391c94edaa918c18a8213735a6f90b88650348
+branch: default
+latesttag: mingle 2.2
+latesttagdistance: 140

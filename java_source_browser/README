@@ -1,0 +1,13 @@
+== Overview
+
+This is a Java implementation of the source browser portion of the Mingle Hg SCM plugin. The rails plugin portion of the Mingle Hg integration provides an HgSourceBRowser class(at app/models/hg_source_repository.rb ) that serves as an adapter between the main plugin and this Java source browser. In addition to the browser, file and dir nodes are also implemented.
+
+== Build and test
+
+The default ant task will perform a clean compile, execute all tests, and assemble the distribution jar into the 'dist' folder.
+
+== Remaining work
+
+Still not thrilled with the implementation and performance. The cache content stuff is fairly nasty. But the cmdline's being the only viable interface to Hg does not leave us with many options  in terms of implementation.
+
+

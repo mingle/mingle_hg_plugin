@@ -1,0 +1,18 @@
+--- !ruby/object:RI::ClassDescription 
+includes: 
+- !ruby/object:RI::IncludedModule 
+  name: Comparable
+comment: 
+attributes: []
+
+instance_methods: 
+- !ruby/object:RI::MethodSummary 
+  name: <=>
+class_methods: 
+- !ruby/object:RI::MethodSummary 
+  name: new
+full_name: ActiveRecord::ConnectionAdapters::SQLiteAdapter::Version
+constants: []
+
+superclass: Object
+name: Version
