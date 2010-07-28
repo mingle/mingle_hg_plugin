@@ -80,6 +80,31 @@ module RepositoryModelHelper
   end  
 end
 
+# PasswordEncryption is a direct copy of Mingle source that allows for the existing
+# SVN and Perforce plugins to have fairly simple controllers. Mixing this module into your
+# configuration allows for the password field to be automatically encrypted by the project.
+#
+# This code is included here because HgConfiguration mixes in this model. This
+# requires that some definition of the module be present in test code in order for tests to run.
+# When deployed to Mingle, Mingle will supply this code.
+module PasswordEncryption
+  def password=(passw)
+    passw = passw.strip
+    if !passw.blank?
+      write_attribute(:password, project.encrypt(passw))
+    else
+      write_attribute(:password, passw)
+    end
+  end
+
+  def password
+    ps = super
+    return ps if ps.blank?
+    project.decrypt(ps)
+  end
+end
+
+
 # Most all Mingle models use this to trim leading and trailing whitespace
 # before writing to the database.  You can use this in your configuration model
 # if you wish the same convenience. 
@@ -134,13 +159,13 @@ ActiveRecord::Base.establish_connection
 ActiveRecord::Migrator.migrate(File.dirname(__FILE__) + '/../db/migrate')
 
 # stub the Mingle Project
-class Project  
+class Project
   def encrypt(text)
     "ENCRYPTED" + text
   end
   
   def decrypt(text)
-    text.split("ENCRYPTED").last
+    text.gsub(/\AENCRYPTED/, "")
   end
   
   def id

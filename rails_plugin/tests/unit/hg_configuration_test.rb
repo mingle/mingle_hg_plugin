@@ -22,6 +22,16 @@ class HgConfigurationTest < Test::Unit::TestCase
     config.save!
     assert_equal 'ENCRYPTEDnew password', config.attributes['password']
   end
+
+  def test_password_encrypted_on_clone
+    config = HgConfiguration.create!(:repository_path => '/tutorial/hello',
+      :project => @project_stub, :username => 'sammy', :password => 'soso')
+    config.save!
+    cloned_config = config.clone
+    cloned_config.project = @project_stub
+    cloned_config.save!
+    assert_equal config.password, cloned_config.password
+  end
   
   PATHS_WITH_PASSWORD = [ 
     'http://user:pass@hg.serpentine.com/tutorial/hello',
