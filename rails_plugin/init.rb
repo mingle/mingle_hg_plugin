@@ -5,6 +5,12 @@ COMPATIBLE_MINGLE_VERSIONS = ['3_1', 'unstable_3_1', 'unsupported-developer-buil
 
 if COMPATIBLE_MINGLE_VERSIONS.include?(MINGLE_VERSION)
 
+  ['app', 'lib', 'config'].each do |dir| 
+    Dir[File.join(File.dirname(__FILE__), dir, '**', '*.rb')].each do |file| 
+      require File.expand_path(file)
+    end
+  end
+
   begin
     require File.expand_path(File.join(File.dirname(__FILE__), 'app/models/hg_configuration'))
     MinglePlugins::Source.register(HgConfiguration)
