@@ -16,7 +16,6 @@ class HgConfiguration < ActiveRecord::Base
   # supplies create_or_update method that keeps controller simple
   # supplies mark_for_deletion method used by mingle to manage config lifecycle
   include RepositoryModelHelper
-  include PasswordEncryption
   
   # mingle model utility that will strip leading and trailing whitespace from all attributes
   strip_on_write  
@@ -25,6 +24,7 @@ class HgConfiguration < ActiveRecord::Base
   validates_presence_of :repository_path
   after_create :remove_cache_dirs
   after_destroy :remove_cache_dirs
+  before_save :encrypt_password
   
   #<snippet name="display_name">
   class << self
@@ -63,6 +63,24 @@ class HgConfiguration < ActiveRecord::Base
         Please use the supplied form field.
       }) 
     end
+  end
+  
+  # use mingle project's encryption capability to protect password in DB
+  def encrypt_password
+    return unless password_changed?
+    pwd_attr = @attributes['password']
+    if !pwd_attr.blank?
+      write_attribute(:password, project.encrypt(pwd_attr))
+    else
+      write_attribute(:password, pwd_attr)
+    end
+  end
+  
+  # *returns*: decrypted password
+  def password
+    pwd = super
+    return pwd if pwd.blank?
+    project.decrypt(pwd)
   end
   
   # *returns*: hg-specific terms for mingle display

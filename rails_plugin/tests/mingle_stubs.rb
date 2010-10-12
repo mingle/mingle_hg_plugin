@@ -51,25 +51,6 @@ module RepositoryModelHelper
   end
 end
 
-# when mixed in, allows any class having a project to encrypt and decrypt
-# data using the project's encryption secret
-module PasswordEncryption
-  def password=(passw)
-    passw = passw.strip
-    if !passw.blank?
-      write_attribute(:password, project.encrypt(passw))
-    else
-      write_attribute(:password, passw)
-    end
-  end
-
-  def password
-    ps = super
-    return ps if ps.blank?
-    project.decrypt(ps)
-  end
-end
-
 # Unfortunately, Mingle is dependent upon a Repository::NoSuchRevisionError 
 # defined in its code base...
 class Repository  
@@ -79,6 +60,23 @@ end
 
 # stub Mingle's Project class
 class Project
+  
+  @@instances = {}
+  
+  class << self
+    def register_instance_for_find(project)
+      @@instances[project.id] = project
+    end
+    
+    def clear_find_registry
+      @@instances = {}
+    end
+    
+    def find(*args)
+      @@instances[args.first]
+    end
+  end
+  
   def encrypt(text)
     "ENCRYPTED" + text
   end
@@ -98,4 +96,8 @@ class Project
   def identifier
     "test_project"
   end  
+  
+  def repository_configuration
+    nil
+  end
 end
