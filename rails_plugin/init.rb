@@ -1,7 +1,7 @@
 # Copyright 2010 ThoughtWorks, Inc.  All rights reserved.
 
 #<snippet name="registration">
-COMPATIBLE_MINGLE_VERSIONS = ['3_1', 'unstable_3_1', 'unsupported-developer-build']
+COMPATIBLE_MINGLE_VERSIONS = ['3_1', '3_2', '3_3', 'unstable_3_3', 'unsupported-developer-build']
 
 if COMPATIBLE_MINGLE_VERSIONS.include?(MINGLE_VERSION)
 

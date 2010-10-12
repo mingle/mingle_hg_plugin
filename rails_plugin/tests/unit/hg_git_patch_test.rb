@@ -1,6 +1,7 @@
 # Copyright 2010 ThoughtWorks, Inc. Licensed under the Apache License, Version 2.0.
 
 require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../git_patch_snippets')
 
 class GitPatchTest < Test::Unit::TestCase
         

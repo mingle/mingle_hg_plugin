@@ -232,3 +232,32 @@ int main(int argc, char **argv)
   end  
     
 end
+
+class StubMingleRevisionRepository
+
+  def initialize
+    @mingle_revs = {}
+    @mingle_revs['bdc6584d0f24562c2bae56ce5abb208126d2a60b'] = OpenStruct.new(
+      :user => 'wpc',
+      :commit_time => Time.mktime(2009, 2, 2, 8, 3, 45),
+      :commit_message => 'fake revision from wpc'
+    )
+    @mingle_revs['25c12050e5597a54698b1b0c1c8f8c89b9147548'] = OpenStruct.new(
+      :user => 'jen',
+      :commit_time => Time.mktime(2009, 2, 3, 8, 3, 45),
+      :commit_message => 'fake revision from jen'
+    )
+  end
+
+  def sew_in_most_recent_changeset_data_from_mingle(children)
+    children.each do |child|
+      mingle_rev = @mingle_revs[child.most_recent_changeset_identifier]
+      if (!mingle_rev.nil?)
+        child.most_recent_committer = mingle_rev.user
+        child.most_recent_commit_time = mingle_rev.commit_time
+        child.most_recent_commit_desc = mingle_rev.commit_message
+      end
+    end
+  end
+
+end
