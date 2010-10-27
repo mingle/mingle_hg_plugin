@@ -117,7 +117,7 @@ class HgConfiguration < ActiveRecord::Base
       java_hg_client, source_browser_cache_path, mingle_rev_repos
     )
     repository = HgRepository.new(hg_client,  source_browser)
-    HgRepositoryClone.new(HgSourceBrowserSynch.new(repository, source_browser))
+    HgRepositoryClone.new(HgSourceBrowserSynch.new(repository, source_browser), clone_path, project, retry_previously_failed_connection)
   end
   
   # *returns*: options needed for RepositoryModelHelper::create_or_update to create 
@@ -157,6 +157,13 @@ class HgConfiguration < ActiveRecord::Base
     result << ":#{uri.port}" unless uri.port.blank?
     result << "#{uri.path}"
     result
+  end
+  
+  
+  # this is hacktastic, but we'd need to make some design changes to 
+  # the mingle SCM API to avoid this check
+  def retry_previously_failed_connection
+     RUBY_PLATFORM =~ /java/ && java.lang.Thread.current_thread.name == 'cache_revisions'
   end
 
 end

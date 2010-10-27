@@ -51,10 +51,6 @@ class HgClient
   def ensure_local_clone
     @java_hg_client.ensure_local_clone
   end
-  
-  def try_to_connect
-    @java_hg_client.try_to_connect
-  end
 
 end
 

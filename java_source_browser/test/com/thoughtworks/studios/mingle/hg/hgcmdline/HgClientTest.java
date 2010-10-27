@@ -282,15 +282,6 @@ public class HgClientTest {
   }
 
   @Test
-  public void tryToConnectDoesNotThrowException() throws Exception {
-    TestRepository oneAdd = new TestRepository("one_add");
-    String pullToReposDir = TestRepository.oneTimeReposDir(null);
-    hgClient = new HgClient(oneAdd.getReposDirName(), pullToReposDir, null);
-    hgClient.tryToConnect();
-  }
-  
-
-  @Test
   public void ensureLocalClone() throws Exception {
     TestRepository oneAdd = new TestRepository("one_add");
     String pullToReposDir = TestRepository.oneTimeReposDir(null);

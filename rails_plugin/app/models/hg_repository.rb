@@ -104,10 +104,6 @@ class HgRepository
   def ensure_local_clone
     @hg_client.ensure_local_clone
   end   
-
-  def try_to_connect
-    @hg_client.try_to_connect
-  end
     
   #:nodoc:
   def construct_changeset(number, changeset_identifier, commit_time, committer, message)

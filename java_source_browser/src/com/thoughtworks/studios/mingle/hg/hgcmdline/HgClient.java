@@ -159,19 +159,6 @@ public class HgClient {
       }
     }
   }
-  
-  public void tryToConnect() {
-    String[] cmdarray = new String[]{ "hg", "identify", masterPath};
-    CommandExecutor cmdExec = new CommandExecutor(Arrays.asList(cmdarray));
-    try {
-      cmdExec.run();
-    } catch (CommandExecutorException ex) {
-      throw new HgClientException(ex);
-    }
-    if (!cmdExec.standardErrorText().trim().equals("")) {
-      throw new HgClientException(cmdExec.standardErrorText());
-    }
-  }
 
   public boolean isRepositoryEmpty() {
     return !(new File(clonePath + File.separator + ".hg" + File.separator + "store" + File.separator + "data").exists());

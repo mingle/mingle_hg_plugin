@@ -11,6 +11,8 @@ require 'fileutils'
 require File.expand_path(File.join(File.dirname(__FILE__), 'mingle_stubs'))
 require File.expand_path(File.join(File.dirname(__FILE__), 'mingle_rails_patches_and_extensions'))
 
+TEST_TMP_DIR = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tmp'))
+
 # setup required env vars
 RAILS_ENV = 'test'
 MINGLE_DATA_DIR=File.dirname(__FILE__) + '/../../tmp/test/mingle_data_dir'
@@ -116,21 +118,17 @@ class TestRepositoryFactory
   
   def source_browser_cache_path
     if (@bundle)
-      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tmp', 'test',
-        'test_source_browser_caches_from_bundles', @bundle, source_browser_path_secret))
+      File.join(TEST_TMP_DIR, 'test_source_browser_caches_from_bundles', @bundle, source_browser_path_secret)
     else
-      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tmp', 'test',
-        'test_source_browser_caches_from_bundles', 'empty'))
+      File.join(TEST_TMP_DIR, 'test_source_browser_caches_from_bundles', 'empty')
     end    
   end
   
   def repos_path
     if (@bundle)
-      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tmp', 'test',
-        'test_repositories_from_bundles', @bundle, repos_path_secret))
+      File.join(TEST_TMP_DIR, 'test_repositories_from_bundles', @bundle, repos_path_secret)
     else
-      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'tmp', 'test', 
-        'test_repositories_from_bundles', 'empty'))
+      File.join(TEST_TMP_DIR, 'test_repositories_from_bundles', 'empty')
     end    
   end
 
