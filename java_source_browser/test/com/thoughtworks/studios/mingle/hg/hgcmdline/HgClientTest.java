@@ -4,13 +4,14 @@ package com.thoughtworks.studios.mingle.hg.hgcmdline;
 
 import com.thoughtworks.studios.mingle.hg.TestRepository;
 import com.thoughtworks.studios.mingle.hg.cmdline.LineHandler;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import org.junit.Test;
 
-import java.util.*;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 
 public class HgClientTest {
 
@@ -282,12 +283,21 @@ public class HgClientTest {
   }
 
   @Test
-  public void ensureLocalClone() throws Exception {
+  public void ensureLocalCloneCreatesLocalReposAndPullRemoteChangesets() throws Exception {
     TestRepository oneAdd = new TestRepository("one_add");
     String pullToReposDir = TestRepository.oneTimeReposDir(null);
     hgClient = new HgClient(oneAdd.getReposDirName(), pullToReposDir, null);
     hgClient.ensureLocalClone();
     assertThat(hgClient.logForRev("tip").getRevNumber(), equalTo(1));
+  }
+
+  @Test
+  public void ensureLocalCloneDoesNotWriteCredentialsToDisk() throws Exception {
+    TestRepository oneAdd = new TestRepository("one_add");
+    String pullToReposDir = TestRepository.oneTimeReposDir(null);
+    hgClient = new HgClient(oneAdd.getReposDirName(), pullToReposDir, null);
+    hgClient.ensureLocalClone();
+    assertFalse(new File(pullToReposDir + File.separator + ".hg" + File.separator + "hgrc").exists());
   }
 
   @Test

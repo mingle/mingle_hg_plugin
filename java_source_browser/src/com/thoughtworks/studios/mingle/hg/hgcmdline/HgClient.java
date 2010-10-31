@@ -2,26 +2,25 @@
 
 package com.thoughtworks.studios.mingle.hg.hgcmdline;
 
+import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutor;
+import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutorException;
+import com.thoughtworks.studios.mingle.hg.cmdline.LineHandler;
 import com.thoughtworks.studios.mingle.hg.util.ArrayUtils;
 import com.thoughtworks.studios.mingle.hg.util.FileUtils;
-import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutor;
-import com.thoughtworks.studios.mingle.hg.cmdline.LineHandler;
-import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutorException;
+import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.apache.log4j.Logger;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.io.StringReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Arrays;
 
 public class HgClient {
 
@@ -146,17 +145,9 @@ public class HgClient {
 
   public void ensureLocalClone() {
     if (!new File(clonePath + File.separator + ".hg").exists()) {
-      FileUtils.mkdirP(new File(clonePath).getParentFile());
-      String[] cmdarray = new String[]{"hg", "clone", "--noupdate", masterPath, clonePath};
-      CommandExecutor cmdExec = new CommandExecutor(Arrays.asList(cmdarray));
-      try {
-        cmdExec.run();
-      } catch (CommandExecutorException ex) {
-        throw new HgClientException(ex);
-      }
-      if (!cmdExec.standardErrorText().trim().equals("")) {
-        throw new HgClientException(cmdExec.standardErrorText());
-      }
+      FileUtils.mkdirP(new File(clonePath));
+      hg(new String[]{ "init" }, LOCAL_OPERATION_TIMEOUT);
+      pull();
     }
   }
 
