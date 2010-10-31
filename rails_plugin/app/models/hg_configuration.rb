@@ -150,15 +150,7 @@ class HgConfiguration < ActiveRecord::Base
     end
       
   end
-  
-  def repository_path_with_safe_userinfo
-    if password.blank?
-      repository_path_with_userinfo
-    else
-      repository_path_with_userinfo.gsub(password, '*****')
-    end
-  end
-  
+    
   def host_port_path_from(uri)
     result = "#{uri.host}"
     result << ":#{uri.port}" unless uri.port.blank?
