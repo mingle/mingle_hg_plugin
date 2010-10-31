@@ -147,7 +147,7 @@ public class HgClient {
   public void ensureLocalClone() {
     if (!new File(clonePath + File.separator + ".hg").exists()) {
       FileUtils.mkdirP(new File(clonePath).getParentFile());
-      String[] cmdarray = new String[]{"hg", "clone", masterPath, clonePath};
+      String[] cmdarray = new String[]{"hg", "clone", "--noupdate", masterPath, clonePath};
       CommandExecutor cmdExec = new CommandExecutor(Arrays.asList(cmdarray));
       try {
         cmdExec.run();
