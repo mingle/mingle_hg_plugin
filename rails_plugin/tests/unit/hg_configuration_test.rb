@@ -137,6 +137,14 @@ class HgConfigurationTest < Test::Unit::TestCase
     assert_equal 'ssh://jimmy@hg.serpentine.com:877/tutorial/hello', config.repository_path_with_userinfo
   end
   
+  def test_repository_path_ignores_username_and_password_field_when_ssh_scheme
+    config = HgConfiguration.new(:repository_path => 'ssh://jimmy@hg.serpentine.com:877/tutorial/hello')
+    config.project = Project.new
+    config.username = 'joejoe'
+    config.password = 'opensesame'
+    assert_equal 'ssh://jimmy@hg.serpentine.com:877/tutorial/hello', config.repository_path_with_userinfo
+  end
+  
   def test_repository_path_with_userinfo_ignores_credentials_when_nil_scheme
     config = HgConfiguration.new(:repository_path => '/tutorial/hello')
     config.project = Project.new

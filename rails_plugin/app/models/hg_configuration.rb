@@ -135,8 +135,9 @@ class HgConfiguration < ActiveRecord::Base
   #:nodoc:
   def repository_path_with_userinfo
     uri = URI.parse(repository_path)
-    return repository_path if uri.scheme.blank?
     
+    return repository_path if (uri.scheme.blank? || uri.scheme == 'ssh')
+        
     if !username.blank? && !password.blank?
       "#{uri.scheme}://#{username}:#{password}@#{host_port_path_from(uri)}"
     elsif !username.blank?
