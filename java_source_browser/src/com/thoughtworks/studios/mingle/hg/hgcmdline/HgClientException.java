@@ -11,4 +11,8 @@ public class HgClientException extends RuntimeException {
   public HgClientException(Throwable cause) {
     super(cause);
   }
+
+  public HgClientException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

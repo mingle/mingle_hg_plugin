@@ -302,7 +302,9 @@ public class HgClientTest {
 
   @Test
   public void ensureLocalCloneThrowsExceptionWithBogusParams() {
-    hgClient = new HgClient("/fjalsdkfj/foo/bar", "/lasfjdlsakjf/bar/foo", null);
+    String masterPath = TestRepository.oneTimeReposDir(null);
+    String clonePath = TestRepository.oneTimeReposDir(null);
+    hgClient = new HgClient(masterPath, clonePath, null);
     try {
       hgClient.ensureLocalClone();
       fail("should have failed!");
