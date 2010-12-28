@@ -78,7 +78,7 @@ class Project
     end
 
     def current
-      find[@@last_requested]
+      find(@@last_requested)
     end
   end
   
