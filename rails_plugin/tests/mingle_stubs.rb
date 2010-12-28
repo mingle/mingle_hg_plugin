@@ -73,7 +73,12 @@ class Project
     end
     
     def find(*args)
-      @@instances[args.first]
+      @@last_requested = args.first
+      @@instances[@@last_requested]
+    end
+
+    def current
+      find[@@last_requested]
     end
   end
   
