@@ -6,14 +6,14 @@ class HgRepositoryClone
     
   include FileUtils
 
-  def initialize(repository, clone_dir, project, retry_errored_connect = false)
+  def initialize(repository, error_file_dir, project, retry_errored_connect = false)
     @repository = repository
-    @clone_dir = clone_dir
+    @error_file_dir = error_file_dir
 
     if File.exist?(error_file) && !retry_errored_connect
       raise StandardError.new(
         %{Mingle cannot connect to the Hg repository for project #{project.identifier}. 
-        The details of the problem are in the file at #{clone_dir}/error.txt}
+        The details of the problem are in the file at #{error_file_dir}/error.txt}
       )
     end
   end
@@ -34,7 +34,7 @@ class HgRepositoryClone
   private 
 
   def error_file
-    "#{@clone_dir}/error.txt"
+    "#{@error_file_dir}/error.txt"
   end
 
   def delete_error_file

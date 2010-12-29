@@ -113,7 +113,7 @@ class HgConfiguration < ActiveRecord::Base
       java_hg_client, source_browser_cache_path, mingle_rev_repos
     )
     repository = HgRepository.new(hg_client,  source_browser)
-    HgRepositoryClone.new(HgSourceBrowserSynch.new(repository, source_browser), clone_path, project, retry_previously_failed_connection)
+    HgRepositoryClone.new(HgSourceBrowserSynch.new(repository, source_browser), data_dir, project, retry_previously_failed_connection)
   end
   
   # *returns*: options needed for RepositoryModelHelper::create_or_update to create 
