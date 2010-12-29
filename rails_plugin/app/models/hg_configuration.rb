@@ -35,6 +35,10 @@ class HgConfiguration < ActiveRecord::Base
   end
   #</snippet>
 
+  def project
+    Project.current
+  end
+
   def remove_cache_dirs
     FileUtils.rm_rf(data_dir)
   end
