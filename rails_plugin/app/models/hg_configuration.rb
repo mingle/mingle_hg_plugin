@@ -35,10 +35,6 @@ class HgConfiguration < ActiveRecord::Base
   end
   #</snippet>
 
-  def project
-    Project.current
-  end
-
   def remove_cache_dirs
     FileUtils.rm_rf(File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s)))
   end
