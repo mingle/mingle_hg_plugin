@@ -4,7 +4,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 class HgConfigurationTest < Test::Unit::TestCase
   
+  include FileUtils
+  
   def setup
+    rm_rf(MINGLE_DATA_DIR)
     @project_stub = Project.new
     Project.register_instance_for_find(@project_stub)
   end
@@ -156,32 +159,32 @@ class HgConfigurationTest < Test::Unit::TestCase
   def test_deletes_any_existing_cache_directory_upon_creation
     expected_id = (HgConfiguration.create!(:repository_path => '/foo/bar').id + 1).to_s
     another_id = expected_id.next
-    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'mercurial', expected_id, 'repository'))
-    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'mercurial', expected_id, 'repository', 'foo.txt'))
-    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'mercurial', expected_id, 'source_browser_cache'))
-    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'mercurial', expected_id, 'source_browser_cache', 'bar.txt'))
-    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'mercurial', another_id, 'source_browser_cache'))
-    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'mercurial', another_id, 'source_browser_cache', 'decoy.txt'))
+    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', expected_id, 'repository'))
+    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', expected_id, 'repository', 'foo.txt'))
+    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', expected_id, 'source_browser_cache'))
+    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', expected_id, 'source_browser_cache', 'bar.txt'))
+    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', another_id, 'source_browser_cache'))
+    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', another_id, 'source_browser_cache', 'decoy.txt'))
     HgConfiguration.create!(:repository_path => '/foo/bar')
-    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'mercurial', expected_id, 'repository', 'foo.txt'))
-    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'mercurial', expected_id, 'source_browser_cache', 'bar.txt'))
-    assert File.exist?(File.join(MINGLE_DATA_DIR, 'mercurial', another_id, 'source_browser_cache', 'decoy.txt'))
+    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', expected_id, 'repository', 'foo.txt'))
+    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', expected_id, 'source_browser_cache', 'bar.txt'))
+    assert File.exist?(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', another_id, 'source_browser_cache', 'decoy.txt'))
   end
   
   def test_cache_files_are_deleted_upon_destroy
     config = HgConfiguration.create!(:repository_path => '/foo/bar')
     config_id = config.id.to_s
     another_config_id = HgConfiguration.create!(:repository_path => '/foo/bar').id.to_s
-    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'mercurial', config_id, 'repository'))
-    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'mercurial', config_id, 'source_browser_cache'))
-    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'mercurial', config_id, 'repository', 'foo.txt'))
-    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'mercurial', config_id, 'source_browser_cache', 'bar.txt'))
-    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'mercurial', another_config_id, 'source_browser_cache'))
-    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'mercurial', another_config_id, 'source_browser_cache', 'decoy.txt'))
+    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', config_id, 'repository'))
+    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', config_id, 'source_browser_cache'))
+    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', config_id, 'repository', 'foo.txt'))
+    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', config_id, 'source_browser_cache', 'bar.txt'))
+    FileUtils.mkdir_p(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', another_config_id, 'source_browser_cache'))
+    FileUtils.touch(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', another_config_id, 'source_browser_cache', 'decoy.txt'))
     config.destroy
-    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'mercurial', config_id, 'repository', 'foo.txt'))
-    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'mercurial', config_id, 'source_browser_cache', 'bar.txt'))
-    assert File.exist?(File.join(MINGLE_DATA_DIR, 'mercurial', another_config_id, 'source_browser_cache', 'decoy.txt'))
+    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', config_id, 'repository', 'foo.txt'))
+    assert !File.exist?(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', config_id, 'source_browser_cache', 'bar.txt'))
+    assert File.exist?(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', another_config_id, 'source_browser_cache', 'decoy.txt'))
   end
   
   def test_source_browsing_ready_returns_true_when_initialized_is_true

@@ -36,7 +36,7 @@ class HgConfiguration < ActiveRecord::Base
   #</snippet>
 
   def remove_cache_dirs
-    FileUtils.rm_rf(File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s)))
+    FileUtils.rm_rf(data_dir)
   end
   
   # *returns* whether or not the repository content is ready to be browsed on the source tab
@@ -102,12 +102,12 @@ class HgConfiguration < ActiveRecord::Base
   
   # *returns*: an instance of HgRepository for Mercurial repository sepcified by this configuration
   def repository
-    clone_path = File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s, 'repository'))
+    clone_path = File.join(data_dir, 'repository')
     style_dir = File.expand_path("#{File.dirname(__FILE__)}/../templates")
     
     java_hg_client = com.thoughtworks.studios.mingle.hg.hgcmdline::HgClient.new(repository_path_with_userinfo, clone_path, style_dir)
     hg_client = HgClient.new(java_hg_client)
-    source_browser_cache_path = File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s, 'source_browser_cache'))
+    source_browser_cache_path = File.join(data_dir, 'source_browser_cache')
     mingle_rev_repos = HgMingleRevisionRepository.new(project)
     source_browser = HgSourceBrowser.new(
       java_hg_client, source_browser_cache_path, mingle_rev_repos
@@ -155,6 +155,17 @@ class HgConfiguration < ActiveRecord::Base
     result
   end
   
+  private
+  
+  def data_dir
+    # for now, avoid recache of everything for old configs as it's expensive
+    legacy_top_level_data_dir = File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial'))
+    if File.exist?(legacy_top_level_data_dir) 
+      File.expand_path(File.join(MINGLE_DATA_DIR, 'mercurial', id.to_s))
+    else
+      File.expand_path(File.join(MINGLE_DATA_DIR, 'plugin_data', 'mingle_hg_plugin', id.to_s))
+    end
+  end
   
   # this is hacktastic, but we'd need to make some design changes to 
   # the mingle SCM API to avoid this check
