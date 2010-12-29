@@ -31,20 +31,8 @@ public class CommandExecutor {
       Pipe pipe = new Pipe(pipeRunnable);
       captureOutput(process, pipe);
     } catch (IOException ioEx) {
-		  // TODO: WTF is cannotFindMercurial doing in the 'cmdline' package ???  it belongs in hgcmdline !!!
-      if (cannotFindMercurial(ioEx)) {
-        throw new CommandExecutorException("Could not find Mercurial (hg). Please ensure that the directory containing your Mercurial binaries is on your path.", ioEx);
-      } else {
-        throw new CommandExecutorException("Command execution failed unexpectedly!", ioEx);
-      }
+		  throw new CommandExecutorException("Command execution failed unexpectedly!", ioEx);
     }
-  }
-
-  // on OS X: "hg: not found"
-  // on Windows: "Cannot run program "hg": CreateProcess error=2, The system cannot find the file specified"
-  // TODO: WTF is cannotFindMercurial doing in the 'cmdline' package ???  it belongs in hgcmdline !!!
-  private boolean cannotFindMercurial(IOException ioEx) {
-    return ioEx.getMessage().matches(".*hg.*not found.*") || ioEx.getMessage().matches(".*Cannot run program.*hg.*"); 
   }
 
   public void run(LineHandler out) {

@@ -2,26 +2,26 @@
 
 package com.thoughtworks.studios.mingle.hg.hgcmdline;
 
+import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutor;
+import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutorException;
+import com.thoughtworks.studios.mingle.hg.cmdline.LineHandler;
 import com.thoughtworks.studios.mingle.hg.util.ArrayUtils;
 import com.thoughtworks.studios.mingle.hg.util.FileUtils;
-import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutor;
-import com.thoughtworks.studios.mingle.hg.cmdline.LineHandler;
-import com.thoughtworks.studios.mingle.hg.cmdline.CommandExecutorException;
+import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.apache.log4j.Logger;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
-import java.io.StringReader;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Arrays;
 
 public class HgClient {
 
@@ -44,7 +44,7 @@ public class HgClient {
         PULL_TIMEOUT = Long.valueOf(pullTimeoutOverride);
       }
     } catch (Exception e) {
-      LOGGER.warn("Unable to override timeout settings; will use defaults", e);  
+      LOGGER.warn("Unable to override timeout settings; will use defaults", e);
     }
   }
 
@@ -146,16 +146,13 @@ public class HgClient {
 
   public void ensureLocalClone() {
     if (!new File(clonePath + File.separator + ".hg").exists()) {
-      FileUtils.mkdirP(new File(clonePath).getParentFile());
-      String[] cmdarray = new String[]{"hg", "clone", masterPath, clonePath};
-      CommandExecutor cmdExec = new CommandExecutor(Arrays.asList(cmdarray));
       try {
-        cmdExec.run();
-      } catch (CommandExecutorException ex) {
-        throw new HgClientException(ex);
-      }
-      if (!cmdExec.standardErrorText().trim().equals("")) {
-        throw new HgClientException(cmdExec.standardErrorText());
+        FileUtils.mkdirP(new File(clonePath));
+        hg(new String[]{ "init" }, LOCAL_OPERATION_TIMEOUT);        
+        pull();
+      } catch (HgClientException e) {
+        FileUtils.rmRf(new File(clonePath));
+        throw e;
       }
     }
   }
@@ -187,11 +184,11 @@ public class HgClient {
     try {
       cmdExec.run(out);
     } catch (CommandExecutorException ex) {
-      throw new HgClientException(ex);
+      handleCommandExecutorException(ex);
     }
     if (!cmdExec.standardErrorText().trim().equals("")) {
       throw new HgClientException(cmdExec.standardErrorText());
-    }    
+    }
   }
 
   private void hg(String[] cmdarray, LineHandler lineHandler, Long timeout) {
@@ -199,7 +196,7 @@ public class HgClient {
     try {
       cmdExec.run(lineHandler);
     } catch (CommandExecutorException ex) {
-      throw new HgClientException(ex);
+      handleCommandExecutorException(ex);
     }
     if (!cmdExec.standardErrorText().trim().equals("")) {
       throw new HgClientException(cmdExec.standardErrorText());
@@ -211,13 +208,25 @@ public class HgClient {
     try {
       cmdExec.run();
     } catch (CommandExecutorException ex) {
-      throw new HgClientException(ex);
+      handleCommandExecutorException(ex);
     }
     if (!cmdExec.standardErrorText().trim().equals("")) {
       throw new HgClientException(cmdExec.standardErrorText());
     }
     return cmdExec.run();
   }
+
+  private void handleCommandExecutorException(CommandExecutorException e) {
+    String rootCauseMessage = (e.getCause() != null) ? e.getCause().getMessage() : e.getMessage();
+    boolean hgNotFound =  rootCauseMessage.matches(".*hg.*not found.*") || rootCauseMessage.matches(".*Cannot run program.*hg.*");
+
+    if (hgNotFound) {
+      throw new HgClientException("Could not find Mercurial (hg). Please ensure that the directory containing your Mercurial binaries is on your path.", e);
+    } else {
+      throw new HgClientException(e);
+    }
+  }
+
 
   private List<String> buildHgCommand(String[] cmdarray) {
     List<String> cmdParts = new LinkedList<String>();
