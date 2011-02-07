@@ -7,7 +7,7 @@ class HgConfigurationsController < ApplicationController
   verify :method => :put, :only => [ :update ]
   #</snippet>
   #<snippet name="privileges">
-  privileges :project_admin => ['index', 'save', 'update', 'show', 'create']
+  privileges UserAccess::PrivilegeLevel::PROJECT_ADMIN => ['index', 'save', 'update', 'show', 'create']
   #</snippet>
 
   def current_tab
