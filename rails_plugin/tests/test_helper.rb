@@ -7,7 +7,7 @@ require 'test/unit'
 require 'ostruct'
 require 'md5'
 require 'fileutils'
-
+require 'java'
 require File.expand_path(File.join(File.dirname(__FILE__), 'mingle_stubs'))
 require File.expand_path(File.join(File.dirname(__FILE__), 'mingle_rails_patches_and_extensions'))
 
