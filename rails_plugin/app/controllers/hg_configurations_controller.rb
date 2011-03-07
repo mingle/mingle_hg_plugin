@@ -1,6 +1,6 @@
 #Copyright 2010 ThoughtWorks, Inc. Licensed under the Apache License, Version 2.0.
 
-class HgConfigurationsController < ApplicationController
+class HgConfigurationsController < ProjectApplicationController
   
   #<snippet name="method_verification">
   verify :method => :post, :only => [ :save, :create ]
