@@ -100,6 +100,22 @@ class HgConfigurationTest < Test::Unit::TestCase
     assert_equal 'http://sammy:soso@hg.serpentine.com:80/tutorial/hello', config.repository_path_with_userinfo
   end
   
+  def test_password_should_be_cgi_escaped_in_repository
+    config = HgConfiguration.new(:repository_path => 'http://hg.serpentine.com/tutorial/hello')
+    config.project = Project.new
+    config.username = 'sammy'
+    config.password = 'http://@#%'
+    assert_equal 'http://sammy:http%3A%2F%2F%40%23%25@hg.serpentine.com:80/tutorial/hello', config.repository_path_with_userinfo
+  end
+  
+  def test_password_should_not_be_double_cgi_escaped_in_repository
+    config = HgConfiguration.new(:repository_path => 'http://hg.serpentine.com/tutorial/hello')
+    config.project = Project.new
+    config.username = 'sammy'
+    config.password = 'http%3A%2F%2F%40%23%25'
+    assert_equal 'http://sammy:http%3A%2F%2F%40%23%25@hg.serpentine.com:80/tutorial/hello', config.repository_path_with_userinfo
+  end
+  
   def test_repository_path_with_userinfo_when_username_supplied_as_attribute_and_no_userinfo_in_path
     config = HgConfiguration.new(:repository_path => 'http://hg.serpentine.com/tutorial/hello')
     config.project = Project.new

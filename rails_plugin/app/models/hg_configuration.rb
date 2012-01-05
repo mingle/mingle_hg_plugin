@@ -1,6 +1,7 @@
 # Copyright 2010 ThoughtWorks, Inc. Licensed under the Apache License, Version 2.0.
 
 require 'uri'
+require 'cgi'
 require File.expand_path(File.join(File.dirname(__FILE__), 'hg_java_env'))
 
 #
@@ -139,7 +140,7 @@ class HgConfiguration < ActiveRecord::Base
     return repository_path if (uri.scheme.blank? || uri.scheme == 'ssh')
         
     if !username.blank? && !password.blank?
-      "#{uri.scheme}://#{username}:#{password}@#{host_port_path_from(uri)}"
+      "#{uri.scheme}://#{username}:#{CGI.escape(CGI.unescape(password))}@#{host_port_path_from(uri)}"
     elsif !username.blank?
       "#{uri.scheme}://#{username}@#{host_port_path_from(uri)}"
     elsif !uri.user.blank? && password.blank?
