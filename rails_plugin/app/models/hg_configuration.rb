@@ -146,7 +146,7 @@ class HgConfiguration < ActiveRecord::Base
     elsif !uri.user.blank? && password.blank?
       "#{uri.scheme}://#{uri.user}@#{host_port_path_from(uri)}"
     elsif !uri.user.blank? && !password.blank?
-      "#{uri.scheme}://#{uri.user}:#{password}@#{host_port_path_from(uri)}"
+      "#{uri.scheme}://#{uri.user}:#{CGI.escape(CGI.unescape(password))}@#{host_port_path_from(uri)}"
     else
       repository_path
     end
