@@ -44,7 +44,7 @@ class HgConfigurationsController < ProjectApplicationController
       flash[:error] = @hg_configuration.errors.full_messages.join(', ')
     end
 
-    redirect_to :action => 'index'
+    render :action => 'index'
   end
 
   def show
