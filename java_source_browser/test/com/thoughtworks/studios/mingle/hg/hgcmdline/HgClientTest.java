@@ -125,7 +125,7 @@ public class HgClientTest {
       hgClient.isBinary("bogus/path", "0");
       fail("should have failed!");     
     } catch (HgClientException ex) {
-      assertThat(ex.getMessage().contains("No such file"), equalTo(true));
+      assertThat(ex.getMessage().contains("no such file"), equalTo(true));
     }
   }
 
@@ -134,21 +134,21 @@ public class HgClientTest {
     setupHgClient("hello");
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     hgClient.cat("hello.c", "1", out);
-    String expectedFileContents = "/*\n" + 
-      " * hello.c\n" + 
-      " *\n" + 
-      " * Placed in the public domain by Bryan O'Sullivan\n" + 
-      " *\n" + 
-      " * This program is not covered by patents in the United States or other\n" + 
-      " * countries.\n" + 
-      " */\n" + 
-      "\n" + 
-      "#include <stdio.h>\n" + 
-      "\n" + 
-      "int main(int argc, char **argv)\n" + 
-      "{\n" + 
-      "\tprintf(\"hello, world!\\n\");\n" + 
-      "\treturn 0;\n" + 
+    String expectedFileContents = "/*\n" +
+      " * hello.c\n" +
+      " *\n" +
+      " * Placed in the public domain by Bryan O'Sullivan\n" +
+      " *\n" +
+      " * This program is not covered by patents in the United States or other\n" +
+      " * countries.\n" +
+      " */\n" +
+      "\n" +
+      "#include <stdio.h>\n" +
+      "\n" +
+      "int main(int argc, char **argv)\n" +
+      "{\n" +
+      "\tprintf(\"hello, world!\\n\");\n" +
+      "\treturn 0;\n" +
       "}\n";
     assertThat(expectedFileContents, equalTo(out.toString()));
   }
@@ -159,9 +159,9 @@ public class HgClientTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
       hgClient.cat("hello.cpp", "1", out);
-      fail("should have failed!");      
+      fail("should have failed!");
     } catch (HgClientException ex) {
-      assertThat(ex.getMessage().contains("No such file"), equalTo(true));
+      assertThat(ex.getMessage().contains("no such file"), equalTo(true));
     }
   }
 
@@ -203,7 +203,7 @@ public class HgClientTest {
     setupHgClient("hello");
     try {
       hgClient.deletedFilesInChangeset("slkdjfsldfkj");
-      fail("should have failed!");      
+      fail("should have failed!");
     } catch (HgClientException ex) {
       assertThat(ex.getMessage().contains("unknown revision"), equalTo(true));
     }

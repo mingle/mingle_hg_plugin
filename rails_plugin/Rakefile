@@ -49,12 +49,10 @@ task :dist => [:test] do
 end
 
 task :mingle_deploy => :dist do
-  Rake::Task['mingle:stop'].invoke
   rm_rf("#{ENV['MINGLE_APP_DIR']}/vendor/plugins/mingle_hg_plugin")
   cp("#{DIST_DIR}/mingle_hg_plugin.tar.gz", "#{ENV['MINGLE_APP_DIR']}/vendor/plugins/")
   untar_cmd = "cd #{ENV['MINGLE_APP_DIR']}/vendor/plugins && tar xzvf mingle_hg_plugin.tar.gz"
   sh(untar_cmd)
-  Rake::Task['mingle:start'].invoke
 end
 
 namespace :mingle do
