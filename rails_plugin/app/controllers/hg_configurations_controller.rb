@@ -19,34 +19,6 @@ class HgConfigurationsController < ProjectApplicationController
   end
   #</snippet>
 
-  def index
-    @hg_configuration = HgConfiguration.find(:first, :conditions => ["marked_for_deletion = ? AND project_id = ?", false, @project.id])
-    respond_to do |format|
-      format.html do
-        render :template => 'hg_configurations/index'
-      end
-      format.xml do
-        if !@hg_configuration.blank? 
-          render :xml => [@hg_configuration].to_xml(:dasherize => false)
-        else
-          render :xml => "No Mercurial configuration found in project #{@project.identifier}.", :status => 404
-        end
-      end
-    end
-  end
-
-  def save
-    create_or_update
-    if @hg_configuration.errors.empty?
-      flash[:notice] = 'Repository settings were successfully saved.' 
-    else
-      set_rollback_only
-      flash[:error] = @hg_configuration.errors.full_messages.join(', ')
-    end
-
-    render :action => 'index'
-  end
-
   def show
     @hg_configuration = HgConfiguration.find(:first, :conditions => ["marked_for_deletion = ? AND project_id = ?", false, @project.id])
     #<snippet name="handling_xml_call">

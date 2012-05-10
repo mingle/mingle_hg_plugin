@@ -1,9 +1,9 @@
-<%= render :partial => 'shared/repository_actions', :locals => {:new_repository => @hg_configuration.nil? || @hg_configuration.new_record?} %>
+<%= render :partial => 'shared/repository_actions', :locals => {:new_repository => @repository_config.nil? || @repository_config.new_record?} %>
 <%= @edit_actions %>
 
 <h1>Mercurial repository settings</h1>
 
-<% form_tag({:action => 'save'}, {:id => 'project-properties'}) do -%>
+<% form_tag({:controller => 'repository', :action => 'save'}, {:id => 'project-properties'}) do -%>
 
 
 <div class="instructions">
@@ -12,13 +12,13 @@
 
 
 <div class="form_item">
-   <label for="hg_configuration_repository_path">Path: <span class="notes">(the file path or url which points to your Mercurial repository)</span></label>
-   <%= text_field 'hg_configuration', 'repository_path', { :class => 'large' } %>
+   <label for="repository_config_repository_path">Path: <span class="notes">(the file path or url which points to your Mercurial repository)</span></label>
+   <%= text_field 'repository_config', 'repository_path', { :class => 'large' } %>
 </div>
 
 <div class="form_item">
-   <label for="hg_configuration_repository_user_name">Repository user name: </label>
-   <%= text_field 'hg_configuration', 'username', { :class => 'large' } %>
+   <label for="repository_config_repository_user_name">Repository user name: </label>
+   <%= text_field 'repository_config', 'username', { :class => 'large' } %>
 </div>
 
 <div class="form_item" id="login_user_password_panel">
@@ -26,7 +26,8 @@
 </div>
 
 
-  <%= hidden_field_tag 'id', @hg_configuration.id if @hg_configuration %>
+<%= hidden_field_tag 'id', @repository_config.id if @repository_config %>
+<%= hidden_field_tag 'repository_type', 'HgConfiguration' %>
 
 <% end -%>
 
@@ -37,7 +38,7 @@ window.changeRepositoryUserPasswordPanel = $('login_user_password_panel')
 window.openChangeRepositoryUserPasswordPanel = function() {
  var panel = window.changeRepositoryUserPasswordPanel;
  panel._innerHTML = panel.innerHTML;
- panel.innerHTML = "<label for='hg_configuration_repository_password'>Repository password: &nbsp;&nbsp;<a href='javascript:void(0)' onclick='window.changeRepositoryUserPasswordPanel.innerHTML = window.changeRepositoryUserPasswordPanel._innerHTML'>Cancel</a></label><input class='large' id='project_repository_password' name='hg_configuration[password]' type='password'>"
+ panel.innerHTML = "<label for='repository_config_repository_password'>Repository password: &nbsp;&nbsp;<a href='javascript:void(0)' onclick='window.changeRepositoryUserPasswordPanel.innerHTML = window.changeRepositoryUserPasswordPanel._innerHTML'>Cancel</a></label><input class='large' id='project_repository_password' name='repository_config[password]' type='password'>"
 }
 SCRIPT
 %>
