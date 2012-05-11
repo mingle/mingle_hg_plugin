@@ -48,23 +48,24 @@ task :dist => [:test] do
   rm_rf("#{DIST_DIR}/mingle_hg_plugin")
 end
 
-task :mingle_deploy => :dist do
-  rm_rf("#{ENV['MINGLE_APP_DIR']}/vendor/plugins/mingle_hg_plugin")
-  cp("#{DIST_DIR}/mingle_hg_plugin.tar.gz", "#{ENV['MINGLE_APP_DIR']}/vendor/plugins/")
-  untar_cmd = "cd #{ENV['MINGLE_APP_DIR']}/vendor/plugins && tar xzvf mingle_hg_plugin.tar.gz"
+desc "Deploys the plugin under MINGLE_ROOT"
+task :deploy => :dist do
+  rm_rf("#{ENV['MINGLE_ROOT']}/vendor/plugins/mingle_hg_plugin")
+  cp("#{DIST_DIR}/mingle_hg_plugin.tar.gz", "#{ENV['MINGLE_ROOT']}/vendor/plugins/")
+  untar_cmd = "cd #{ENV['MINGLE_ROOT']}/vendor/plugins && tar xzvf mingle_hg_plugin.tar.gz"
   sh(untar_cmd)
 end
 
 namespace :mingle do
 
   task :stop do
-    stop_mingle_cmd = "cd #{ENV['MINGLE_APP_DIR']} && ./MingleServer stop"
+    stop_mingle_cmd = "cd #{ENV['MINGLE_ROOT']} && ./MingleServer stop"
     system(stop_mingle_cmd)
   end
 
   task :start do
     
-    start_mingle_cmd = "cd #{ENV['MINGLE_APP_DIR']} && ./MingleServer start --mingle.dataDir=#{ENV['MINGLE_DATA_DIR']} --mingle.configDir=#{ENV['MINGLE_CONFIG_DIR']}"
+    start_mingle_cmd = "cd #{ENV['MINGLE_ROOT']} && ./MingleServer start --mingle.dataDir=#{ENV['MINGLE_DATA_DIR']} --mingle.configDir=#{ENV['MINGLE_CONFIG_DIR']}"
     sh(start_mingle_cmd)
   end
 
