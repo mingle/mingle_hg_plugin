@@ -1,3 +1,4 @@
+.idea
 .DS_Store
 rails_plugin/app/**/*.jar
 rails_plugin/build/*
@@ -11,3 +12,4 @@ out/*
 tmp/*
 java_source_browser/target/*
 java_source_browser/dist/*
+/*.iml
